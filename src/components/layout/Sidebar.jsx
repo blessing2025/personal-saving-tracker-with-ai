@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useTranslation } from '../contexts/TranslationContext';
+import { useTranslation } from '../../contexts/TranslationContext';
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -15,7 +15,7 @@ import {
   History,
   X
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Sidebar({ isOpen, onClose }) {
   const { t } = useTranslation();

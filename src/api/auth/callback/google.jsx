@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
-import { syncData, pullData } from '../lib/syncManager';
-import { useTranslation } from '../contexts/TranslationContext';
+import { supabase } from '../../../lib/supabaseClient';
+import { syncData, pullData } from '../../../lib/syncManager';
+import { useTranslation } from '../../../contexts/TranslationContext';
 import toast from 'react-hot-toast';
 
 export default function AuthCallback() {
