@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Personal Saving Tracker
 ### Premium Financial Management
 
@@ -24,7 +23,7 @@ Create a `.env` file in the root directory with the following keys:
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-ASSEMBLYAI_API_KEY=your_assemblyai_api_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ## 🗄️ Database Schema (Supabase & Dexie)
@@ -53,7 +52,3 @@ PST is a strictly offline-first application.
 
 ---
 *© 2026 Personal Saving Tracker System. All Rights Reserved.*
-=======
-# personal-saving-tracker-with-ai
-a personal saving tracker with ai voice to text
->>>>>>> 3a1d02fd0bd1365670d653b426f0ff00ffb8b0a1
