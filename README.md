@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Personal Saving Tracker
 ### Premium Financial Management
 
@@ -52,3 +53,7 @@ PST is a strictly offline-first application.
 
 ---
 *© 2026 Personal Saving Tracker System. All Rights Reserved.*
+=======
+# personal-saving-tracker-with-ai
+a personal saving tracker with ai voice to text
+>>>>>>> 3a1d02fd0bd1365670d653b426f0ff00ffb8b0a1
