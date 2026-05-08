@@ -1,11 +1,17 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { AssemblyAI } from "npm:assemblyai";
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+
+const ASSEMBLYAI_API_KEY = Deno.env.get('ASSEMBLYAI_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const client = new AssemblyAI({
+  apiKey: ASSEMBLYAI_API_KEY || '',
+});
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -16,32 +22,21 @@ Deno.serve(async (req) => {
     const { audio } = await req.json();
     if (!audio) throw new Error("No audio data provided");
 
-    // 1. Convert Base64 to Blob for OpenAI
-    const binaryString = atob(audio);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    const audioBlob = new Blob([bytes], { type: 'audio/webm' });
-
-    // 2. Transcription using OpenAI Whisper
-    const formData = new FormData();
-    formData.append('file', audioBlob, 'recording.webm');
-    formData.append('model', 'whisper-1');
-
-    const transcriptionRes = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}` },
-      body: formData,
+    // 1. Transcription using AssemblyAI SDK
+    const audioData = Uint8Array.from(atob(audio), c => c.charCodeAt(0));
+    const transcriptRes = await client.transcripts.transcribe({
+      audio: audioData,
+      language_code: 'en_us',
     });
 
-    const transcriptionData = await transcriptionRes.json();
-    if (transcriptionData.error) throw new Error(`Whisper Error: ${transcriptionData.error.message}`);
+    if (transcriptRes.status === 'error') {
+      throw new Error(`AssemblyAI Error: ${transcriptRes.error}`);
+    }
     
-    const text = transcriptionData.text;
-    console.log("[AI] Transcribed Text:", text);
+    const transcript = transcriptRes.text || "";
+    console.log("[AI] Transcribed Text:", transcript);
 
-    // 3. Structured Data Extraction using GPT
+    // 2. Structured Data Extraction using GPT-4o-mini
     const gptRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -55,7 +50,7 @@ Deno.serve(async (req) => {
             role: 'system', 
             content: 'You are a financial assistant. Extract the "amount" (number) and "category" (Rent, Food, Transport, Groceries, Bills, Entertainment, or Other) from the text. Return ONLY valid JSON.' 
           },
-          { role: 'user', content: `Text: "${text}"` }
+          { role: 'user', content: `Text: "${transcript}"` }
         ],
         response_format: { type: "json_object" }
       }),

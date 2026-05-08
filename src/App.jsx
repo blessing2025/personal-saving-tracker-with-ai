@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, Link } from '
 import { useLiveQuery } from 'dexie-react-hooks';
 import { I18nProvider } from 'react-aria';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/layout/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Register from './pages/Register'; // Import Register
 import Login from './pages/Login';
@@ -16,6 +16,7 @@ import GoalPage from './pages/GoalPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import VoiceRecords from './pages/VoiceRecords';
+import AuthCallback from './api/auth/callback/google';
 import LoadingScreen from './components/common/LoadingScreen';
 import { Menu, Wallet, ArrowRight } from 'lucide-react';
 import { db } from './lib/db';
@@ -215,6 +216,7 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/api/auth/callback/google" element={<AuthCallback />} />
 
           {/* Private Routes wrapped in both Authentication and the App Shell Layout */}
           <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
