@@ -4,7 +4,7 @@ import { supabase } from './supabaseClient';
 export const pullData = async (userId) => {
   if (!navigator.onLine || !userId) return;
 
-  const tables = ['incomes', 'expenses', 'goals', 'profiles'];
+  const tables = ['profiles', 'incomes', 'expenses', 'goals'];
   
   for (const table of tables) {
     try {
@@ -35,7 +35,7 @@ export const pullData = async (userId) => {
 export const syncData = async (userId) => {
   if (!navigator.onLine || !userId) return;
 
-  const tables = ['incomes', 'expenses', 'goals', 'profiles'];
+  const tables = ['profiles', 'incomes', 'expenses', 'goals'];
 
   for (const table of tables) {
     try {

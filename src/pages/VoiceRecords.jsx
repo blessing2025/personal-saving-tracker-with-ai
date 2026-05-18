@@ -20,7 +20,7 @@ import { useTranslation } from '../contexts/TranslationContext';
 import { supabase } from '../lib/supabaseClient';
 
 export default function VoiceRecords() {
-  const { t, profile } = useTranslation();
+  const { t, profile, deferredPrompt, setDeferredPrompt } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
@@ -125,6 +125,17 @@ export default function VoiceRecords() {
     }
   };
 
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-7xl mx-auto space-y-12">
       {/* Hero Header */}
@@ -136,6 +147,27 @@ export default function VoiceRecords() {
           {t('voiceMemoDescription')}
         </p>
       </header>
+
+      {/* PWA Install Banner */}
+      {deferredPrompt && (
+        <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 animate-in zoom-in duration-500">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200 dark:shadow-none">
+              <img src="/logo.png" alt="Logo" className="w-7 h-7 object-contain" />
+            </div>
+            <div>
+              <h3 className="font-headline font-bold text-indigo-900 dark:text-white">{t('installPSTSystem')}</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('installPSTSystemDescription')}</p>
+            </div>
+          </div>
+          <button 
+            onClick={handleInstallClick}
+            className="px-8 py-3 bg-indigo-600 text-white font-bold rounded-full shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95 whitespace-nowrap"
+          >
+            {t('installNow')}
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Recording Interface */}

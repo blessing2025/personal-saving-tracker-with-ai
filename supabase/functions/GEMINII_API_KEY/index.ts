@@ -6,11 +6,12 @@ const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
@@ -24,7 +25,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number) and "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). Return ONLY a raw JSON object.' },
+            { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "GBP", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If no currency is explicitly mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
             {
               inline_data: { 
                 mime_type: "audio/webm", 
@@ -42,7 +43,9 @@ Deno.serve(async (req) => {
     const data = await response.json();
     if (data.error) throw new Error(`Gemini Error: ${data.error.message}`);
 
-    const result = JSON.parse(data.candidates[0].content.parts[0].text);
+    const rawText = data.candidates[0].content.parts[0].text;
+    const cleanedText = rawText.replace(/```json|```/g, "").trim();
+    const result = JSON.parse(cleanedText);
     console.log("[AI] Parsed Result:", result);
 
     return new Response(JSON.stringify(result), {

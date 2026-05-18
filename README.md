@@ -12,14 +12,15 @@ A high-end, editorial-style financial management application designed for precis
 - **Global Ready:** Built-in localization support for English and French, including dynamic currency formatting.
 
 ##  Tech Stack
-- **Framework:** React 19 + Vite
+- **Framework:** React 19 + Vite 6
 - **Styling:** Tailwind CSS 4 (OKLCH Color Support)
 - **Database:** IndexedDB (Dexie) + Supabase 
 - **Icons:** Lucide React
 - **Charts:** Recharts
 
 ## ⚙️ Environment Configuration
-Create a `.env` file in the root directory with the following keys:
+Create a `.env` file in the root directory. **Important:** These variables must be set in your deployment platform (e.g., Vercel, Netlify) for production builds.
+
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key

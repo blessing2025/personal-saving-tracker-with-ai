@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pst-v30'; // Final UI refinements and dynamic currency symbols
+const CACHE_NAME = 'pst-v31'; // Final UI refinements and dynamic currency symbols
 
 const ASSETS_TO_PRECACHE = [
   '/',
