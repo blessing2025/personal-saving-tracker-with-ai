@@ -11,7 +11,7 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders });
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -25,10 +25,10 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: 'You are a professional financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "XAF", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If the user mentions "francs" or "CFA", use "XAF" or "XOF". If no currency is mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
+            { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "GBP", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If no currency is explicitly mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
             { 
               inline_data: { 
-                mime_type: contentType || "audio/webm", 
+                mime_type: "audio/webm", 
                 data: audio 
               } 
             }
@@ -40,12 +40,18 @@ Deno.serve(async (req) => {
       })
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[AI] Gemini API failed with status ${response.status}:`, errorText);
+      throw new Error(`Gemini API Error (${response.status}): ${errorText}`);
+    }
+
     const data = await response.json();
     if (data.error) throw new Error(`Gemini Error: ${data.error.message}`);
 
-    const rawText = data.candidates[0].content.parts[0].text;
-    const cleanedText = rawText.replace(/```json|```/g, "").trim();
-    const result = JSON.parse(cleanedText);
+    const rawText = data.candidates[0].content.parts[0].text; // Assuming Gemini returns JSON in a code block
+    const cleanedText = rawText.replace(/```json|```/g, "").trim(); // Remove markdown code block
+    const result = JSON.parse(cleanedText); // Parse the cleaned JSON string
     console.log("[AI] Parsed Result:", result);
 
     return new Response(JSON.stringify(result), {

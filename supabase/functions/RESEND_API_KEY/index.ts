@@ -11,10 +11,18 @@ const corsHeaders = {
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      console.error("[Notification] Critical: RESEND_API_KEY is not set in Supabase Secrets.");
+      return new Response(
+        JSON.stringify({ error: "Missing RESEND_API_KEY secret" }), 
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { type, recipientEmail, payload } = await req.json();
     
     console.log(`[Notification] Incoming: type=${type}, to=${recipientEmail}`);
@@ -64,11 +72,6 @@ Deno.serve(async (req) => {
     if (!recipientEmail) {
       console.error("Error: recipientEmail is missing from the request body.");
       throw new Error("Recipient email is required");
-    }
-
-    if (!RESEND_API_KEY) {
-      console.error("Critical: RESEND_API_KEY is not set in Supabase Secrets.");
-      return new Response(JSON.stringify({ error: "Missing RESEND_API_KEY secret" }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const res = await fetch('https://api.resend.com/emails', {

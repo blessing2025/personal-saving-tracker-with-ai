@@ -65,8 +65,8 @@ export default function VoiceRecords() {
           setIsProcessing(true);
           const tid = toast.loading(t('processingAI'));
 
-          try {
-            const { data, error } = await supabase.functions.invoke('openai_api', {
+          try { // Changed function name from 'openai_api' to 'GEMINI_API_KEY'
+            const { data, error } = await supabase.functions.invoke('GEMINI_API_KEY', {
               body: { 
                 audio: base64Audio,
                 contentType: mimeType 
