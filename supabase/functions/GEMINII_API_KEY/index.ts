@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json();
+    const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
 
     // Transcription & Extraction using Gemini 1.5 Flash
@@ -25,10 +25,10 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "GBP", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If no currency is explicitly mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
-            {
+            { text: 'You are a professional financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "XAF", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If the user mentions "francs" or "CFA", use "XAF" or "XOF". If no currency is mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
+            { 
               inline_data: { 
-                mime_type: "audio/webm", 
+                mime_type: contentType || "audio/webm", 
                 data: audio 
               } 
             }

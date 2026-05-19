@@ -67,7 +67,10 @@ export default function VoiceRecords() {
 
           try {
             const { data, error } = await supabase.functions.invoke('openai_api', {
-              body: { audio: base64Audio }
+              body: { 
+                audio: base64Audio,
+                contentType: mimeType 
+              }
             });
 
             if (error) throw error;

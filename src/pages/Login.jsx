@@ -60,10 +60,12 @@ export default function Login() {
   };
 
   const handleGoogleSignIn = async () => {
+    const origin = window.location.origin;
+    console.log("[Auth] Redirecting to:", `${origin}/api/auth/callback/google`);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback/google`,
+        redirectTo: `${origin}/api/auth/callback/google`,
       },
     });
     if (error) toast.error(error.message);
