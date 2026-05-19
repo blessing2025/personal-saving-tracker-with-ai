@@ -33,7 +33,10 @@ export const pullData = async (userId) => {
 };
 
 export const syncData = async (userId) => {
-  if (!navigator.onLine || !userId) return;
+  if (!navigator.onLine || !userId) {
+    console.log("[Sync] Offline or no user ID. Skipping sync.");
+    return;
+  }
 
   const tables = ['profiles', 'incomes', 'expenses', 'goals'];
 

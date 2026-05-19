@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pst-v32'; // Updated environment configuration
+const CACHE_NAME = 'pst-v33'; // Force update after fixing environment variables
 
 const ASSETS_TO_PRECACHE = [
   '/',
