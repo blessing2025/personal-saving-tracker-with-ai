@@ -135,7 +135,7 @@ const Dashboard = () => {
 
           // Trigger email notification via Edge Function
           if (user?.email && profile?.monthly_summaries) {
-            await supabase.functions.invoke('send-notification', {
+            await supabase.functions.invoke('RESEND_API_KEY', {
               body: {
                 type: 'monthly_summary',
                 recipientEmail: user.email,

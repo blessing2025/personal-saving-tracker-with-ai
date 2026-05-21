@@ -36,7 +36,7 @@ The system expects the following tables in Supabase (PostgreSQL) and matching st
 
 ## 🤖 Edge Functions
 The PST System utilizes Supabase Edge Functions for AI and Notifications:
-1. **openai_api**: Handles Whisper-1 audio transcription and GPT-4o expense parsing.
+1. **GEMINI_API_KEY**: Handles Whisper-1 audio transcription and GPT-4o expense parsing.
 2. **send-notification**: Manages transactional emails via Resend or SMTP.
 
 ## 📱 PWA & Offline Support
