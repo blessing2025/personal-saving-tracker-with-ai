@@ -45,7 +45,7 @@ export default function IncomePage() {
       });
       
       if (isEmailEnabled && user?.email) {
-        const { error: invokeError } = await supabase.functions.invoke('send-notification', {
+        const { error: invokeError } = await supabase.functions.invoke('RESEND_API_KEY', {
           body: {
             type: 'income_added',
             recipientEmail: user.email,
