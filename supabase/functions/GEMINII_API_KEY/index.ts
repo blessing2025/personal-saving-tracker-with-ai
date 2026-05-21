@@ -16,13 +16,13 @@ Deno.serve(async (req) => {
   try {
     const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINII_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINII_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "GBP", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If no currency is explicitly mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
+            { text: 'You are a professional financial assistant. Listen to this audio and extract expense details. Return ONLY a raw JSON object with the following keys: "amount" (number) and "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, Other).' },
             { 
               inline_data: { 
                 mime_type: contentType || "audio/webm", 

@@ -56,8 +56,8 @@ export default function VoiceRecords() {
           blob: audioBlob,
           date: new Date().toISOString()
         });
-
-        // Convert blob to base64 for the OpenAI Edge Function
+        
+        // Convert blob to base64 for the Gemini Edge Function
         const reader = new FileReader();
         reader.readAsDataURL(audioBlob);
         reader.onloadend = async () => {
