@@ -87,7 +87,7 @@ export default function GoalPage() {
         toast.success(`🎉 ${t('goalCompleted')}!`);
         
         // Fire and forget the notification so it doesn't block the UI or show false errors
-        supabase.functions.invoke('send-notification', {
+        supabase.functions.invoke('RESEND_API_KEY', {
           body: {
             type: 'goal_completed',
             recipientEmail: user.email,
