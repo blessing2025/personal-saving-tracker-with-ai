@@ -14,9 +14,10 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log("[AI] Request received for voice processing...");
     const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINII_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
