@@ -64,7 +64,7 @@ export default function VoiceRecords() {
           const base64Audio = reader.result.split(',')[1];
           setIsProcessing(true);
           const tid = toast.loading(t('processingAI'));
-
+          
           try { 
             const { data, error } = await supabase.functions.invoke('GEMINII_API_KEY', {
               body: { 
