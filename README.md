@@ -36,7 +36,7 @@ The system expects the following tables in Supabase (PostgreSQL) and matching st
 
 ## 🤖 Edge Functions
 The PST System utilizes Supabase Edge Functions for AI and Notifications:
-1. **GEMINII_API_KEYr**: Handles Gemini-1.5-Flash audio transcription and expense parsing.
+1. **GEMINII_API_KEY**: Handles Gemini-1.5-Flash audio transcription and expense parsing.
 2. **send-notification**: Manages transactional emails via Resend or SMTP.
 
 ## 📱 PWA & Offline Support
