@@ -2,7 +2,6 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 
 const GEMINII_API_KEY = Deno.env.get('GEMINII_API_KEY');
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -17,8 +16,6 @@ Deno.serve(async (req) => {
   try {
     const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
-
-    // Transcription & Extraction using Gemini 1.5 Flash
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINII_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,8 +47,17 @@ Deno.serve(async (req) => {
     if (data.error) throw new Error(`Gemini Error: ${data.error.message}`);
 
     const rawText = data.candidates[0].content.parts[0].text; // Assuming Gemini returns JSON in a code block
-    const cleanedText = rawText.replace(/```json|```/g, "").trim(); // Remove markdown code block
-    const result = JSON.parse(cleanedText); // Parse the cleaned JSON string
+    
+    // More robust parsing to handle both raw JSON and markdown-wrapped JSON
+    let result;
+    try {
+      const cleanedText = rawText.replace(/```json|```/g, "").trim();
+      result = JSON.parse(cleanedText);
+    } catch (e) {
+      console.error("[AI] Failed to parse JSON from Gemini:", rawText);
+      throw new Error("AI returned an invalid data format");
+    }
+
     console.log("[AI] Parsed Result:", result);
 
     return new Response(JSON.stringify(result), {

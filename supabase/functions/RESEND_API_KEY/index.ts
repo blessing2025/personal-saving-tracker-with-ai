@@ -6,6 +6,7 @@ const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
 Deno.serve(async (req) => {
@@ -83,7 +84,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'PST System <notifications@resend.com>', // IMPORTANT: Replace with your OWN verified domain on Resend.com
+        from: 'PST System <PST@resend.dev>', // IMPORTANT: Replace with your OWN verified domain on Resend.com
         to: [recipientEmail],
         subject,
         html,
@@ -93,9 +94,11 @@ Deno.serve(async (req) => {
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      console.error(`Resend API Error (Status ${res.status}):`, data);
-      // Return the actual Resend error so we can see it in the browser network tab
-      return new Response(JSON.stringify(data), { status: res.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      console.error(`[Resend] API Error (${res.status}):`, data);
+      return new Response(
+        JSON.stringify({ error: data.message || "Resend API rejected the request", details: data }), 
+        { status: res.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log("Email sent successfully:", data);
