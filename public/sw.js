@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pst-v36'; // Force update for function logging and API key checks
+const CACHE_NAME = 'pst-v37'; // Force update for function logging and API key checks
 
 const ASSETS_TO_PRECACHE = [
   '/',
