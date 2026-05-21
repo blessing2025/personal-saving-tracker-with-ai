@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
             { text: 'You are a financial assistant. Listen to this audio and extract the "amount" (as a number), the "currency" (e.g., "USD", "EUR", "GBP", "XOF", etc.), and the "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, or Other). If no currency is explicitly mentioned, assume USD. Return ONLY a raw JSON object with keys: amount, currency, and category.' },
             { 
               inline_data: { 
-                mime_type: "audio/webm", 
+                mime_type: contentType || "audio/webm", 
                 data: audio 
               } 
             }

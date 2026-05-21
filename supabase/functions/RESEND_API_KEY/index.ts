@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     switch (type) {
       case 'income_added':
         subject = "New Income Recorded - Personal Saving Tracker";
-        const dateStr = payload.date ? new Date(payload.date).toLocaleDateString() : new Date().toLocaleDateString();
+        const dateStr = payload?.date ? new Date(payload.date).toLocaleDateString() : new Date().toLocaleDateString();
         html = `
           <h1>Income Confirmed</h1>
           <p>A new entry of <strong>${payload.amount} ${payload.currency}</strong> has been added to your ledger.</p>
