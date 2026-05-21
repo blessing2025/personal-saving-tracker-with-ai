@@ -29,11 +29,8 @@ Deno.serve(async (req) => {
                 data: audio 
               } 
             }
-          ]
-        }],
-        generationConfig: {
-          response_mime_type: "application/json",
-        }
+          ],
+        }]
       })
     });
 

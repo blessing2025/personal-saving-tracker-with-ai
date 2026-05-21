@@ -24,7 +24,7 @@ Create a `.env` file in the root directory. **Important:** These variables must 
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-GEMINIi_API_KEY=your_gemini_api_key
+GEMINII_API_KEY=your_gemini_api_key
 ```
 
 ## 🗄️ Database Schema (Supabase & Dexie)
@@ -36,7 +36,7 @@ The system expects the following tables in Supabase (PostgreSQL) and matching st
 
 ## 🤖 Edge Functions
 The PST System utilizes Supabase Edge Functions for AI and Notifications:
-1. **GEMINIi_API_KEY**: Handles Whisper-1 audio transcription and GPT-4o expense parsing.
+1. **GEMINII_API_KEYr**: Handles Gemini-1.5-Flash audio transcription and expense parsing.
 2. **send-notification**: Manages transactional emails via Resend or SMTP.
 
 ## 📱 PWA & Offline Support
