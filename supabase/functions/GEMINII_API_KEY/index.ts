@@ -17,13 +17,15 @@ Deno.serve(async (req) => {
     console.log("[AI] Request received for voice processing...");
     const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
+
+    console.log(`[AI] Calling Gemini API for content-type: ${contentType}`);
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINII_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: 'You are a professional financial assistant. Listen to this audio and extract expense details. Return ONLY a raw JSON object with the following keys: "amount" (number) and "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, Other).' },
+            { text: 'You are a professional financial assistant. Listen to this audio and extract expense details. Return ONLY a raw JSON object with the following keys: "amount" (number) and "category" (one of: Rent, Food, Transport, Groceries, Bills, Entertainment, Other). If you cannot find a value, return null for that key.' },
             { 
               inline_data: { 
                 mime_type: contentType || "audio/webm", 
@@ -37,14 +39,20 @@ Deno.serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[AI] Gemini API failed with status ${response.status}:`, errorText);
+      console.error(`[AI] Gemini API failed with status ${response.status}. Body:`, errorText);
       throw new Error(`Gemini API Error (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();
     if (data.error) throw new Error(`Gemini Error: ${data.error.message}`);
+    
+    if (!data.candidates || data.candidates.length === 0 || !data.candidates[0].content) {
+      console.error("[AI] No candidates returned from Gemini. Full Response:", JSON.stringify(data));
+      throw new Error("AI could not understand the audio.");
+    }
 
-    const rawText = data.candidates[0].content.parts[0].text; // Assuming Gemini returns JSON in a code block
+    const rawText = data.candidates[0].content.parts[0].text; 
+    console.log("[AI] Raw response from Gemini:", rawText);
     
     // More robust parsing to handle both raw JSON and markdown-wrapped JSON
     let result;
