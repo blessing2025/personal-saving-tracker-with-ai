@@ -79,10 +79,12 @@ export const translations = {
     add: 'Add',
     saved: 'Saved',
     incomeManagement: 'Income Management',
+    incomePageDescription: 'Manage and track all your income sources.',
     expenseManagement: 'Expense Management',
+    expensePageDescription: 'Track, analyze, and optimize your financial outflows.',
     monthlyTotal: 'Monthly Total',
     recordNew: 'Record New',
-    categoryRent: 'Rent',
+    categoryRent: 'Rent', // Existing
     financialFlow: 'Financial Flow',
     Employment: 'Employment',
     Freelance: 'Freelance',
@@ -90,8 +92,13 @@ export const translations = {
     Gift: 'Gift',
     Other: 'Other',
     viewFullStatement: 'View Full Statement',
-    categoryFood: 'Food',
-    categoryTransport: 'Transport',
+    categoryFood: 'Food', // Existing
+    categoryTransport: 'Transport', // Existing
+    categoryGroceries: 'Groceries', // New
+    categoryBills: 'Bills', // New
+    categoryUtilities: 'Utilities', // Existing
+    categoryHealth: 'Health & Wellness', // Existing
+    categoryEntertainment: 'Entertainment', // Existing
     totalSavings: 'Total Savings',
     totalIncome: 'Total Income',
     totalExpenses: 'Total Expenses',
@@ -102,6 +109,7 @@ export const translations = {
     actions: 'Actions',
     transactionHistory: 'Transaction History',
     type: 'Type',
+    all: 'All', // New
     uncategorized: 'Uncategorized',
     delete: 'Delete',
     deleteConfirm: 'Are you sure you want to delete this?',
@@ -156,16 +164,19 @@ export const translations = {
     lastChanged: 'Last changed',
     activeSessions: 'Active Sessions',
     currentSession: 'Current Session',
-    active2HoursAgo: 'Active 2 hours ago',
-    revoke: 'Revoke',
+    active2HoursAgo: 'Active 2 hours ago', // Consider removing if not used
+    revoke: 'Revoke', // Consider removing if not used
     voiceExpenseTracker: 'Voice Expense Tracker',
     voiceTrackerMotto: 'Tap to record your expenses on the go. Our system will parse your speech into formatted ledger entries.',
     recording: 'Recording...',
     readyToRecord: 'Ready to Record',
     financialDictation: 'Financial Dictation',
     voiceExample: 'Bought groceries at Whole Foods for $54.20',
-    recordingInProgress: 'Recording in progress',
-    tapToCapture: 'Tap the mic to capture an expense',
+    recordingInProgress: 'Recording in progress', // Existing
+    tapToCapture: 'Tap the mic to capture an expense', // Existing
+    processingAI: 'AI is analyzing your expense...', // Existing
+    parseSuccess: 'Expense parsed successfully!', // Existing
+    parseError: 'Failed to understand the voice note.', // Existing
     howItWorks: 'How it works',
     voiceInstructions: 'Speak naturally. Mention the merchant, amount, and category. Our engine handles the categorization and currency conversion instantly.',
     startRecording: 'Start Recording',
@@ -192,18 +203,14 @@ export const translations = {
     smartCategorization: 'Smart Categorization',
     privacySecurity: 'Privacy & Security',
     undo: 'Undo',
-    restored: 'Restored',
-    processingAI: 'AI is analyzing your expense...',
-    parseSuccess: 'Expense parsed successfully!',
-    parseError: 'Failed to understand the voice note.',
+    restored: 'Restored', // Existing
     passwordTooShort: 'Password must be at least 6 characters',
     amountExceedsGoal: 'Contribution exceeds the remaining goal amount',
     installPSTSystem: 'Install PST System',
     installPSTSystemDescription: 'Add to your home screen for a premium, app-like experience and offline access.',
     installNow: 'Install Now',
     financialReportFilename: 'Financial_Report.pdf',
-    voiceRecordsHowItWorks: 'How it works',
-    voiceRecordsHowItWorksDescription: 'Your recordings are stored securely in your browser\'s local database. You can listen back to them whenever you need to update your ledger.',
+    voiceRecordsHowItWorks: 'How it works', // Existing
     noVoiceNotesCaptured: 'No voice notes captured yet.',
     voiceMemoRecorder: 'Voice Memo Recorder',
     voiceMemoDescription: 'Capture quick voice memos for your financial records. These notes are saved locally for your reference.',
@@ -216,9 +223,59 @@ export const translations = {
     accessibility: 'Accessibility',
     offline: 'Offline',
     accessibilityDesc: 'Record memos even without an internet connection.',
-    contributionExceedsTarget: 'Contribution would exceed target amount',
-    currentPasswordRequired: 'Current password is required',
-    invalidCurrentPassword: 'The current password provided is incorrect',
+    contributionExceedsTarget: 'Contribution would exceed target amount', // Existing
+    currentPasswordRequired: 'Current password is required', // Existing
+    invalidCurrentPassword: 'The current password provided is incorrect', // Existing
+    summaryCurrentPeriod: 'Financial summary for current period', // Existing
+    categorizePrompt: 'Categorize your expenses to unlock personalized lifestyle insights.', // Existing
+    increased: 'increased', // Existing
+    decreased: 'decreased', // Existing
+    noDate: 'No date', // Existing
+    overall: 'Overall', // Existing
+    orContinueWith: 'Or continue with', // Existing
+    googleSignIn: 'Google', // Existing
+    // New strings identified from various pages
+    profileManagementDescription: 'Update your professional identity and security settings at the personal saving tracker.',
+    general: 'General',
+    systemName: 'PST System',
+    allRightsReserved: '© 2026 All Rights Reserved',
+    variance: 'Variance',
+    monthlySummary: 'Monthly Summary',
+    totalInflow: 'Total Inflow',
+    totalOutflow: 'Total Outflow',
+    vaultStatus: 'Vault Status',
+    emergencyFundStatus: 'Your emergency fund is currently {{percent}}% of your target goal.',
+    Salary: 'Salary',
+    goalPageDescription: 'Plan for the future and track your progress with editorial precision. Every contribution brings your vision closer to reality.',
+    deadline: 'Deadline',
+    workspacePreferences: 'Workspace Preferences',
+    emailAlertsIncomeDescription: 'System activity and alerts',
+    goalAchievementAlertsDescription: 'Alert when goals are completed',
+    monthlyFinancialSummariesDescription: 'Monthly performance notifications',
+    lightThemeName: 'Light Atelier',
+    darkThemeName: 'Midnight Ledger',
+    syncingWithCloud: 'Syncing with cloud...',
+    systemSynchronized: 'System synchronized',
+    lastSynced: 'Last synced: Today at',
+    settingsSaveError: 'Failed to save settings. Please try again.',
+    resetPasswordDescription: 'Enter your email to receive a recovery link.',
+    passwordResetLinkSent: 'Password reset link sent to your email!',
+    emailConfirmationSent: 'Check your email for confirmation!',
+    errorBoundaryTitle: 'Something went wrong.',
+    errorBoundaryButton: 'Return to Dashboard',
+    landingTitle: 'Professional Financial Tracking',
+    landingDescription: 'A professional-grade ledger for your personal wealth management.',
+    profileUpdateSuccess: 'Profile updated successfully!',
+    profileUpdateError: 'Failed to update profile.',
+    passwordMatchError: 'Passwords do not match',
+    passwordUpdateSuccess: 'Password updated successfully!',
+    avatarUpdateSuccess: 'Profile picture updated!',
+    avatarUpdateError: 'Failed to update profile picture.',
+    goalCreateError: 'Failed to create goal',
+    goalUpdateError: 'Failed to update goal',
+    goalDeleteError: 'Failed to delete goal',
+    voiceDeleteError: 'Failed to delete recording',
+    micError: 'Could not access microphone. Please check permissions.',
   },
   'fr-FR': {
     dashboard: 'Tableau de bord',
@@ -300,6 +357,7 @@ export const translations = {
     add: 'Ajouter',
     saved: 'Économisé',
     incomeManagement: 'Gestion des revenus',
+    incomePageDescription: 'Gérez et suivez toutes vos sources de revenus.',
     expenseManagement: 'Gestion des dépenses',
     monthlyTotal: 'Total mensuel',
     recordNew: 'Enregistrer',
@@ -311,8 +369,13 @@ export const translations = {
     Gift: 'Cadeau',
     Other: 'Autre',
     viewFullStatement: 'Voir le relevé complet',
-    categoryFood: 'Nourriture',
-    categoryTransport: 'Transport',
+    categoryFood: 'Nourriture', // Existing
+    categoryTransport: 'Transport', // Existing
+    categoryGroceries: 'Épicerie', // New
+    categoryBills: 'Factures', // New
+    categoryUtilities: 'Services publics', // Existing
+    categoryHealth: 'Santé et Bien-être', // Existing
+    categoryEntertainment: 'Divertissement', // Existing
     totalSavings: 'Épargne totale',
     totalIncome: 'Revenu total',
     totalExpenses: 'Total des dépenses',
@@ -323,6 +386,7 @@ export const translations = {
     actions: 'Actions',
     transactionHistory: 'Historique des transactions',
     type: 'Type',
+    all: 'Tout', // New
     uncategorized: 'Non catégorisé',
     delete: 'Supprimer',
     deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ceci ?',
@@ -377,16 +441,19 @@ export const translations = {
     lastChanged: 'Dernière modification',
     activeSessions: 'Sessions actives',
     currentSession: 'Session actuelle',
-    active2HoursAgo: 'Actif il y a 2 heures',
-    revoke: 'Révoquer',
+    active2HoursAgo: 'Actif il y a 2 heures', // Consider removing if not used
+    revoke: 'Révoquer', // Consider removing if not used
     voiceExpenseTracker: 'Suivi des dépenses vocales',
     voiceTrackerMotto: 'Appuyez pour enregistrer vos dépenses lors de vos déplacements. Notre système analysera votre discours en entrées de grand livre formatées.',
     recording: 'Enregistrement...',
     readyToRecord: 'Prêt à enregistrer',
     financialDictation: 'Dictée financière',
     voiceExample: 'J\'ai acheté des courses au supermarché pour 54,20 €',
-    recordingInProgress: 'Enregistrement en cours',
-    tapToCapture: 'Appuyez sur le micro pour enregistrer une dépense',
+    recordingInProgress: 'Enregistrement en cours', // Existing
+    tapToCapture: 'Appuyez sur le micro pour enregistrer une dépense', // Existing
+    processingAI: 'L\'IA analyse votre dépense...', // Existing
+    parseSuccess: 'Dépense analysée avec succès !', // Existing
+    parseError: 'Échec de la compréhension de la note vocale.', // Existing
     howItWorks: 'Comment ça marche',
     voiceInstructions: 'Parlez naturellement. Mentionnez le commerçant, le montant et la catégorie. Notre moteur gère instantanément la catégorisation et la conversion des devises.',
     startRecording: "Démarrer l'enregistrement",
@@ -440,5 +507,24 @@ export const translations = {
     accessibility: 'Accessibilité',
     offline: 'Hors ligne',
     accessibilityDesc: 'Enregistrez des mémos même sans connexion Internet.',
+    summaryCurrentPeriod: 'Résumé financier pour la période actuelle',
+    categorizePrompt: 'Catégorisez vos dépenses pour débloquer des aperçus personnalisés.',
+    increased: 'augmenté',
+    decreased: 'diminué',
+    noDate: 'Pas de date',
+    overall: 'Global',
+    orContinueWith: 'Ou continuer avec',
+    googleSignIn: 'Google',
+    profileUpdateSuccess: 'Profil mis à jour avec succès !',
+    profileUpdateError: 'Échec de la mise à jour du profil.',
+    passwordMatchError: 'Les mots de passe ne correspondent pas',
+    passwordUpdateSuccess: 'Mot de passe mis à jour avec succès !',
+    avatarUpdateSuccess: 'Photo de profil mise à jour !',
+    avatarUpdateError: 'Échec de la mise à jour de la photo de profil.',
+    goalCreateError: 'Échec de la création de l\'objectif',
+    goalUpdateError: 'Échec de la mise à jour de l\'objectif',
+    goalDeleteError: 'Échec de la suppression de l\'objectif',
+    voiceDeleteError: 'Échec de la suppression de l\'enregistrement',
+    micError: 'Impossible d\'accéder au micro. Veuillez vérifier les permissions.',
   }
 };
