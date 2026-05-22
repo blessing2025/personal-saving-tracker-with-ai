@@ -14,7 +14,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log("[AI] Request received for voice processing...");
+    if (!GEMINII_API_KEY) throw new Error("GEMINII_API_KEY is not set in Supabase secrets");
+    
     const { audio, contentType } = await req.json();
     if (!audio) throw new Error("No audio data provided");
 
