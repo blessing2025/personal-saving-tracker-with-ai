@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useForm } from 'react-hook-form';
 import { useNumberFormatter } from 'react-aria';
@@ -28,16 +28,39 @@ export default function ExpensePage() {
   const { t, profile, formatDate } = useTranslation();
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const { register, handleSubmit, reset, setValue } = useForm();
 
   // Effect to handle pre-filling from Voice Records
   useEffect(() => {
     if (location.state?.prefill) {
-      const { amount, category } = location.state.prefill;
-      if (amount) setValue('amount', amount);
-      if (category) setValue('category', category);
+      const prefill = location.state.prefill;
+
+      if (Array.isArray(prefill)) {
+        // Handle multiple expenses found in one voice record
+        const handleBulkAdd = async () => {
+          const newExpenses = prefill.map(exp => ({
+            id: crypto.randomUUID(),
+            user_id: user.id,
+            amount: parseFloat(exp.amount),
+            category: exp.category || 'Other',
+            date: new Date().toISOString(),
+            synced_at: null
+          }));
+          await db.expenses.bulkAdd(newExpenses);
+          toast.success(t('multipleExpensesRecorded'));
+          // Clear navigation state to prevent re-processing on refresh
+          navigate(location.pathname, { replace: true, state: {} });
+        };
+        handleBulkAdd();
+      } else {
+        // Fallback for single expense object
+        const { amount, category } = prefill;
+        if (amount) setValue('amount', amount);
+        if (category) setValue('category', category);
+      }
     }
-  }, [location.state, setValue]);
+  }, [location.state, setValue, user.id, navigate, location.pathname, t]);
 
   const categoryIcons = {
     Rent: <CreditCard size={18} />,
