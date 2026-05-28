@@ -209,7 +209,7 @@ export const translations = {
     transcriptionEngine: 'Transcription Engine',
     smartCategorization: 'Smart Categorization',
     privacySecurity: 'Privacy & Security',
-    investmentIdeas: 'Investment Strategy',
+    investmentIdeas: 'Investment Insight',
     generatingIdeas: 'Generating tailored investment ideas...',
     undo: 'Undo',
     restored: 'Restored', // Existing

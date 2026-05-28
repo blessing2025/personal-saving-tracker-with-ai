@@ -23,7 +23,7 @@ Deno.serve(async (req) => {
     let parts: any[] = [];
 
     if (mode === 'investment_ideas') {
-      prompt = `You are a world-class financial advisor. Based on a monthly income of ${context.income} and expenses of ${context.expenses} (${context.currency}), suggest 3 professional investment ideas. Keep suggestions brief, high-end, and realistic. Return ONLY a raw JSON array of strings. Example: ["Index Funds", "Real Estate REITs", "High-Yield Bonds"].`;
+      prompt = `You are a world-class financial advisor. Based on a monthly income of ${context.income} and expenses of ${context.expenses} (${context.currency}), provide 3 personalized financial insights. Focus on strategic observations regarding cash flow optimization, wealth-building logic, and risk-adjusted positioning rather than just listing asset names. Keep insights brief, sophisticated, and realistic. Return ONLY a raw JSON array of strings.`;
       parts = [{ text: prompt }];
     } else {
       if (!audio) throw new Error("No audio data provided");
