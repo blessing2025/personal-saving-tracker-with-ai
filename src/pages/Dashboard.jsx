@@ -10,8 +10,6 @@ import {
   Plus, 
   Calendar, 
   MoreHorizontal,
-  CalendarDays,
-  ChevronDown,
   ShoppingBag, 
   Briefcase,
   Download,
@@ -25,7 +23,6 @@ import toast from 'react-hot-toast';
 const Dashboard = () => {
   const { t, profile, formatDate, deferredPrompt, setDeferredPrompt } = useTranslation();
   const { user } = useAuth();
-  const [viewFrequency, setViewFrequency] = useState('monthly');
   const [investmentIdeas, setInvestmentIdeas] = useState([]);
 
   // Fetch data from Dexie
@@ -68,37 +65,6 @@ const Dashboard = () => {
   const maxIncome = Math.max(...monthlyData.map(d => d.value), 0) || 1;
   const avgMonthlyIncome = monthlyData.reduce((acc, curr) => acc + curr.value, 0) / 6;
   const bestMonthAmount = Math.max(...monthlyData.map(d => d.value), 0);
-
-  // Savings Velocity Calculation (Comparison with previous month)
-  const currentMonthStats = useMemo(() => {
-    const inc = incomes?.filter(i => {
-      const d = new Date(i.date);
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    }).reduce((s, i) => s + i.amount, 0) || 0;
-    const exp = expenses?.filter(e => {
-      const d = new Date(e.date);
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    }).reduce((s, e) => s + e.amount, 0) || 0;
-    return inc - exp;
-  }, [incomes, expenses, now]);
-
-  const prevMonthStats = useMemo(() => {
-    const pm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const inc = incomes?.filter(i => {
-      const d = new Date(i.date);
-      return d.getMonth() === pm.getMonth() && d.getFullYear() === pm.getFullYear();
-    }).reduce((s, i) => s + i.amount, 0) || 0;
-    const exp = expenses?.filter(e => {
-      const d = new Date(e.date);
-      return d.getMonth() === pm.getMonth() && d.getFullYear() === pm.getFullYear();
-    }).reduce((s, e) => s + e.amount, 0) || 0;
-    return inc - exp;
-  }, [incomes, expenses, now]);
-
-  const velocity = prevMonthStats !== 0 
-    ? ((currentMonthStats - prevMonthStats) / Math.abs(prevMonthStats)) * 100 
-    : currentMonthStats > 0 ? 100 : 0;
-
   // Lifestyle Insight Calculation
   const topCategory = useMemo(() => {
     const totals = expenses?.reduce((acc, curr) => {
@@ -126,22 +92,6 @@ const Dashboard = () => {
       }).format(val) + ` ${profile?.currency || ''}`;
     }
   };
-
-  // Savings Frequency Calculation for the first goal
-  const goalMetrics = useMemo(() => {
-    const activeGoal = goals?.[0];
-    if (!activeGoal || !activeGoal.deadline) return null;
-
-    const remaining = activeGoal.target_amount - activeGoal.saved_amount;
-    const daysLeft = Math.max(1, Math.ceil((new Date(activeGoal.deadline) - now) / (1000 * 60 * 60 * 24)));
-    
-    return {
-      name: activeGoal.name,
-      daily: remaining / daysLeft,
-      weekly: remaining / Math.max(0.1, daysLeft / 7),
-      monthly: remaining / Math.max(0.1, daysLeft / 30)
-    };
-  }, [goals, now]);
 
   // Fetch Investment Ideas from AI
   useEffect(() => {
@@ -271,58 +221,6 @@ const Dashboard = () => {
         <MetricCard title={t('totalExpenses')} value={formatCurrency(totalExpense)} icon={<Receipt />} color="rose" trend="4.2%" />
       </div>
 
-      {/* Saving Goals Progress Section */}
-      <section className="mb-12">
-        <div className="flex justify-between items-end mb-6">
-          <div>
-            <h3 className="text-2xl font-extrabold tracking-tight dark:text-white font-headline">{t('savingGoals')}</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t('goalInsightTitle')}</p>
-          </div>
-          <Link to="/goals" className="text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:underline">{t('viewAllHistory')}</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {goals?.map((goal) => {
-            const percentage = Math.min((goal.saved_amount / (goal.target_amount || 1)) * 100, 100);
-            const daysLeft = goal.deadline ? Math.max(0, Math.ceil((new Date(goal.deadline) - now) / (1000 * 60 * 60 * 24))) : null;
-            
-            let barColor = 'bg-indigo-600';
-            if (percentage >= 100) barColor = 'bg-emerald-500';
-            else if (daysLeft !== null) {
-              if (daysLeft <= 7) barColor = 'bg-rose-500';
-              else if (daysLeft <= 30) barColor = 'bg-amber-500';
-            }
-
-            return (
-              <div key={goal.id} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-bold text-slate-900 dark:text-white truncate pr-2 font-headline">{goal.name}</h4>
-                    {daysLeft !== null && (
-                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${daysLeft <= 7 ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>
-                        {daysLeft}d
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex justify-between items-end mb-2">
-                    <span className="text-2xl font-black text-slate-900 dark:text-white font-headline">{percentage.toFixed(0)}%</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{formatCurrency(goal.target_amount)}</span>
-                  </div>
-                </div>
-                <div className="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div className={`h-full transition-all duration-1000 ${barColor}`} style={{ width: `${percentage}%` }}></div>
-                </div>
-              </div>
-            );
-          })}
-          {goals?.length === 0 && (
-            <Link to="/goals" className="col-span-full py-10 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col items-center justify-center text-slate-400 hover:border-indigo-600 hover:text-indigo-600 transition-all group">
-              <Plus className="mb-2 group-hover:scale-110 transition-transform" />
-              <span className="text-xs font-bold uppercase tracking-widest">{t('setNewGoal')}</span>
-            </Link>
-          )}
-        </div>
-      </section>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content: Recent Activity */}
         <div className="lg:col-span-2">
@@ -371,41 +269,29 @@ const Dashboard = () => {
 
         {/* Sidebar */}
         <div className="space-y-8">
+          {/* Investment Insight (Formerly Strategy) Card */}
           <div className="bg-indigo-600 dark:bg-indigo-700 text-white rounded-xl overflow-hidden relative p-8 flex flex-col justify-between min-h-[350px] shadow-xl">
-            <div className="relative z-20">
-              <div className="flex justify-between items-start mb-6">
+            <div className="absolute -right-4 -bottom-4 opacity-10 rotate-12 pointer-events-none">
+              <Sparkles size={160} />
+            </div>
+            <div className="relative z-10">
+              <div className="mb-6">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white/30">
-                  {t('editorialInsight')}
+                  {t('investmentInsight')}
                 </span>
-                
-                {/* Frequency Dropdown */}
-                <div className="relative flex items-center bg-white/10 hover:bg-white/20 rounded-lg px-2 py-1 border border-white/20 transition-colors">
-                  <select 
-                    value={viewFrequency}
-                    onChange={(e) => setViewFrequency(e.target.value)}
-                    className="bg-transparent border-none text-[10px] font-bold uppercase tracking-wider text-white focus:ring-0 outline-none pr-4 cursor-pointer appearance-none"
-                  >
-                    <option value="daily" className="text-slate-900">{t('daily')}</option>
-                    <option value="weekly" className="text-slate-900">{t('weekly')}</option>
-                    <option value="monthly" className="text-slate-900">{t('monthly')}</option>
-                  </select>
-                  <ChevronDown size={10} className="absolute right-1 text-white/60 pointer-events-none" />
-                </div>
               </div>
 
-              <h3 className="text-3xl font-black tracking-tighter mt-6 leading-tight">
-                Savings velocity has {velocity >= 0 ? 'increased' : 'decreased'} by {Math.abs(velocity).toFixed(1)}%.
+              <h3 className="text-3xl font-black tracking-tighter mt-6 mb-8 leading-tight">
+                {t('investmentIdeas')}
               </h3>
-              {goalMetrics && (
-                <div className="mt-6 p-4 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20">
-                   <p className="text-[10px] font-bold uppercase tracking-widest text-indigo-200 mb-2">{t('requiredSaving')} ({goalMetrics.name}) / {t(viewFrequency)}</p>
-                   <p className="text-3xl font-black tracking-tighter">{formatCurrency(goalMetrics[viewFrequency])}</p>
-                </div>
-              )}
+              <ul className="space-y-4">
+                {(investmentIdeas.length > 0 ? investmentIdeas : [t('generatingIdeas')]).map((idea, idx) => (
+                  <li key={idx} className="flex gap-3 text-sm font-medium text-indigo-100">
+                    <span className="text-indigo-300 font-bold">{idx + 1}.</span> {idea}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <button className="relative z-10 w-full mt-6 bg-white text-indigo-600 font-bold py-4 rounded-full transition-transform active:scale-95 shadow-xl hover:bg-slate-50">
-              {t('detailedForecast')}
-            </button>
           </div>
 
           {/* Chart Mockup */}
@@ -436,20 +322,6 @@ const Dashboard = () => {
                 <p className="text-xl font-extrabold mt-1 text-emerald-600 dark:text-emerald-400">{formatCurrency(bestMonthAmount)}</p>
               </div>
             </div>
-          </div>
-
-          {/* Investment Ideas Section */}
-          <div className="bg-slate-900 text-white rounded-xl p-8 border border-slate-800 shadow-xl">
-            <h3 className="font-extrabold text-lg tracking-tight mb-6 flex items-center gap-2">
-              <Sparkles className="text-indigo-400" size={20} /> {t('investmentIdeas')}
-            </h3>
-            <ul className="space-y-4">
-              {(investmentIdeas.length > 0 ? investmentIdeas : [t('generatingIdeas')]).map((idea, idx) => (
-                <li key={idx} className="flex gap-3 text-sm font-medium text-slate-300">
-                  <span className="text-indigo-500 font-bold">{idx + 1}.</span> {idea}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>

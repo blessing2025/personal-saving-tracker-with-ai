@@ -15,6 +15,7 @@ export default function GoalPage() {
   const { register, handleSubmit, reset } = useForm();
   const [contributionInputs, setContributionInputs] = useState({});
   const [formFrequency, setFormFrequency] = useState('monthly');
+  const [sortBy, setSortBy] = useState('default');
   // console.log("[DEBUG] GoalPage rendered. Current frequency view:", viewFrequency); // Moved to Dashboard
 
   const formatter = useNumberFormatter({
@@ -27,6 +28,18 @@ export default function GoalPage() {
   const goals = useLiveQuery(() => 
     db.goals.where('user_id').equals(user?.id || '').filter(item => !item._deleted).toArray()
   , [user]) || [];
+
+  const sortedGoals = React.useMemo(() => {
+    const list = [...goals];
+    if (sortBy === 'deadline') {
+      return list.sort((a, b) => {
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(a.deadline) - new Date(b.deadline);
+      });
+    }
+    return list;
+  }, [goals, sortBy]);
 
   // Calculate overall momentum
   const totalTarget = goals.reduce((sum, g) => sum + g.target_amount, 0);
@@ -240,8 +253,22 @@ export default function GoalPage() {
 
         {/* Goals Grid */}
         <section className="lg:col-span-8 space-y-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-indigo-900 dark:text-white font-headline">{t('activeGoals') || 'Active Goals'}</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('sortBy')}</span>
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-slate-100 dark:bg-slate-700 border-none rounded-lg py-1.5 px-3 text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-0 outline-none cursor-pointer"
+              >
+                <option value="default">{t('default')}</option>
+                <option value="deadline">{t('closestDeadline')}</option>
+              </select>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {goals.map((goal) => {
+            {sortedGoals.map((goal) => {
               const percentage = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
               
               // Calculate required contribution based on the goal's specific frequency
