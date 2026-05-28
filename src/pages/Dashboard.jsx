@@ -282,7 +282,7 @@ const Dashboard = () => {
               </div>
 
               <h3 className="text-3xl font-black tracking-tighter mt-6 mb-8 leading-tight">
-                {t('investmentInsight')}
+                {t('Investment Insight')}
               </h3>
               <ul className="space-y-4">
                 {(investmentIdeas.length > 0 ? investmentIdeas : [t('generatingIdeas')]).map((idea, idx) => (
