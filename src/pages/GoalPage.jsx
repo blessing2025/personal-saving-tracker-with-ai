@@ -254,16 +254,16 @@ export default function GoalPage() {
         {/* Goals Grid */}
         <section className="lg:col-span-8 space-y-12">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-indigo-900 dark:text-white font-headline">{t('activeGoals') || 'Active Goals'}</h2>
+            <h2 className="text-2xl font-bold text-indigo-900 dark:text-white font-headline">{t('Active goals') || 'Active Goals'}</h2>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('sortBy')}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{t('sort by')}</span>
               <select 
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-slate-100 dark:bg-slate-700 border-none rounded-lg py-1.5 px-3 text-xs font-bold text-slate-600 dark:text-slate-300 focus:ring-0 outline-none cursor-pointer"
               >
                 <option value="default">{t('default')}</option>
-                <option value="deadline">{t('closestDeadline')}</option>
+                <option value="deadline">{t('closest deadline')}</option>
               </select>
             </div>
           </div>

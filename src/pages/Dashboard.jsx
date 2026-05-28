@@ -277,7 +277,7 @@ const Dashboard = () => {
             <div className="relative z-10">
               <div className="mb-6">
                 <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white/30">
-                  {t('investmentInsight')}
+                  {t('Investment Insight')}
                 </span>
               </div>
 
