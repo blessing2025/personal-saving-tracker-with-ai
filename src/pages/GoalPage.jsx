@@ -14,7 +14,7 @@ export default function GoalPage() {
   const { user } = useAuth();
   const { register, handleSubmit, reset } = useForm();
   const [contributionInputs, setContributionInputs] = useState({});
-  const [viewFrequency, setViewFrequency] = useState('monthly');
+  const [formFrequency, setFormFrequency] = useState('monthly');
   // console.log("[DEBUG] GoalPage rendered. Current frequency view:", viewFrequency); // Moved to Dashboard
 
   const formatter = useNumberFormatter({
@@ -48,6 +48,7 @@ export default function GoalPage() {
         saved_amount: 0,
         deadline: data.deadline,
         color: 'bg-indigo-600',
+        frequency: formFrequency,
         created_at: new Date().toISOString(),
         synced_at: null
       });
@@ -111,6 +112,14 @@ export default function GoalPage() {
       setContributionInputs(prev => ({ ...prev, [id]: '' }));
     } catch (err) {
       toast.error('Failed to update goal');
+    }
+  };
+
+  const updateGoalFrequency = async (id, newFrequency) => {
+    try {
+      await db.goals.update(id, { frequency: newFrequency, synced_at: null });
+    } catch (err) {
+      toast.error('Failed to update frequency');
     }
   };
 
@@ -206,8 +215,8 @@ export default function GoalPage() {
               <div className="relative flex items-center bg-slate-50 dark:bg-slate-700 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
                 <CalendarDays className="absolute left-4 text-indigo-600 dark:text-indigo-400 pointer-events-none" size={18} />
                 <select 
-                  value={viewFrequency}
-                  onChange={(e) => setViewFrequency(e.target.value)}
+                  value={formFrequency}
+                  onChange={(e) => setFormFrequency(e.target.value)}
                   className="w-full bg-transparent border-none py-4 pl-12 pr-10 text-sm font-bold text-slate-900 dark:text-white focus:ring-0 outline-none cursor-pointer appearance-none font-body"
                 >
                   <option value="daily" className="text-slate-900">{t('daily')}</option>
@@ -235,12 +244,13 @@ export default function GoalPage() {
             {goals.map((goal) => {
               const percentage = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
               
-              // Calculate required contribution based on selected frequency
+              // Calculate required contribution based on the goal's specific frequency
+              const frequency = goal.frequency || 'monthly';
               const daysLeft = goal.deadline ? Math.max(1, Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))) : null;
               let requiredAmount = 0;
               if (daysLeft && goal.saved_amount < goal.target_amount) {
                 const remaining = goal.target_amount - goal.saved_amount;
-                const divisor = viewFrequency === 'daily' ? daysLeft : (viewFrequency === 'weekly' ? daysLeft / 7 : daysLeft / 30);
+                const divisor = frequency === 'daily' ? daysLeft : (frequency === 'weekly' ? daysLeft / 7 : daysLeft / 30);
                 requiredAmount = remaining / divisor;
               }
 
@@ -255,14 +265,28 @@ export default function GoalPage() {
                     <div className="h-12 w-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-4 text-indigo-600 dark:text-indigo-400">
                       {getIcon(goal.name)}
                     </div>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-headline">{goal.name}</h3>
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-headline truncate pr-4">{goal.name}</h3>
+                      
+                      {/* Individual Frequency Toggle */}
+                      <select 
+                        value={frequency}
+                        onChange={(e) => updateGoalFrequency(goal.id, e.target.value)}
+                        className="bg-slate-100 dark:bg-slate-700 border-none rounded-lg py-1 px-2 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 focus:ring-0 outline-none cursor-pointer"
+                      >
+                        <option value="daily">{t('daily')}</option>
+                        <option value="weekly">{t('weekly')}</option>
+                        <option value="monthly">{t('monthly')}</option>
+                      </select>
+                    </div>
+
                     <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{t('deadline')}: {goal.deadline ? formatDate(goal.deadline) : 'No date'}</p>
                     
                     {/* Dynamic Required Contribution Display */}
                     {daysLeft && goal.saved_amount < goal.target_amount && (
                       <div className="mt-4 flex flex-col gap-0.5 animate-in fade-in slide-in-from-top-2 duration-300">
                         <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 opacity-80">
-                          {t('requiredContribution')} ({t(viewFrequency)})
+                          {t('requiredContribution')} ({t(frequency)})
                         </span>
                         <span className="text-lg font-bold text-slate-700 dark:text-slate-200">
                           {formatter.format(requiredAmount)}
