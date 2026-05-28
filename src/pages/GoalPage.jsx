@@ -7,13 +7,15 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from '../contexts/TranslationContext';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabaseClient'; // Import supabase client
-import { Target, Plus, Trash2, ArrowRight, Laptop, Car, Palmtree, PlusCircle, MoreVertical } from 'lucide-react';
+import { Target, Plus, Trash2, ArrowRight, Laptop, Car, Palmtree, PlusCircle, MoreVertical, CalendarDays, ChevronDown } from 'lucide-react';
 
 export default function GoalPage() {
   const { t, profile, formatDate } = useTranslation();
   const { user } = useAuth();
   const { register, handleSubmit, reset } = useForm();
   const [contributionInputs, setContributionInputs] = useState({});
+  const [viewFrequency, setViewFrequency] = useState('monthly');
+  // console.log("[DEBUG] GoalPage rendered. Current frequency view:", viewFrequency); // Moved to Dashboard
 
   const formatter = useNumberFormatter({
     style: 'currency',
@@ -46,6 +48,7 @@ export default function GoalPage() {
         saved_amount: 0,
         deadline: data.deadline,
         color: 'bg-indigo-600',
+        created_at: new Date().toISOString(),
         synced_at: null
       });
       toast.success(t('goalCreated'));
@@ -147,13 +150,16 @@ export default function GoalPage() {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-screen-2xl mx-auto space-y-10">
       {/* Page Header */}
-      <header>
-        <h1 className="text-5xl font-extrabold tracking-tight text-indigo-900 dark:text-white mb-3 font-headline">
-          {t('savingGoals')}
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 text-lg font-light max-w-2xl">
-          Plan for the future and track your progress with editorial precision. Every contribution brings your vision closer to reality.
-        </p>
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div>
+          <h1 className="text-5xl font-extrabold tracking-tight text-indigo-900 dark:text-white mb-3 font-headline">
+            {t('savingGoals')}
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-lg font-light max-w-2xl">
+            Plan for the future and track your progress with editorial precision. Every contribution brings your vision closer to reality.
+          </p>
+        </div>
+
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -194,6 +200,23 @@ export default function GoalPage() {
                 type="date" 
               />
             </div>
+            {/* Frequency Toggle */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2 ml-1">{t('frequency')}</label>
+              <div className="relative flex items-center bg-slate-50 dark:bg-slate-700 rounded-xl focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
+                <CalendarDays className="absolute left-4 text-indigo-600 dark:text-indigo-400 pointer-events-none" size={18} />
+                <select 
+                  value={viewFrequency}
+                  onChange={(e) => setViewFrequency(e.target.value)}
+                  className="w-full bg-transparent border-none py-4 pl-12 pr-10 text-sm font-bold text-slate-900 dark:text-white focus:ring-0 outline-none cursor-pointer appearance-none font-body"
+                >
+                  <option value="daily" className="text-slate-900">{t('daily')}</option>
+                  <option value="weekly" className="text-slate-900">{t('weekly')}</option>
+                  <option value="monthly" className="text-slate-900">{t('monthly')}</option>
+                </select>
+                <ChevronDown className="absolute right-4 text-slate-400 pointer-events-none" size={16} />
+              </div>
+            </div>
             <button className="w-full bg-indigo-600 text-white rounded-full py-4 font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-indigo-200 dark:shadow-none" type="submit">
               <span>{t('add')}</span>
               <ArrowRight size={18} />
@@ -211,6 +234,16 @@ export default function GoalPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {goals.map((goal) => {
               const percentage = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
+              
+              // Calculate required contribution based on selected frequency
+              const daysLeft = goal.deadline ? Math.max(1, Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))) : null;
+              let requiredAmount = 0;
+              if (daysLeft && goal.saved_amount < goal.target_amount) {
+                const remaining = goal.target_amount - goal.saved_amount;
+                const divisor = viewFrequency === 'daily' ? daysLeft : (viewFrequency === 'weekly' ? daysLeft / 7 : daysLeft / 30);
+                requiredAmount = remaining / divisor;
+              }
+
               return (
                 <div key={goal.id} className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4">
@@ -224,6 +257,18 @@ export default function GoalPage() {
                     </div>
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-headline">{goal.name}</h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{t('deadline')}: {goal.deadline ? formatDate(goal.deadline) : 'No date'}</p>
+                    
+                    {/* Dynamic Required Contribution Display */}
+                    {daysLeft && goal.saved_amount < goal.target_amount && (
+                      <div className="mt-4 flex flex-col gap-0.5 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 opacity-80">
+                          {t('requiredContribution')} ({t(viewFrequency)})
+                        </span>
+                        <span className="text-lg font-bold text-slate-700 dark:text-slate-200">
+                          {formatter.format(requiredAmount)}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="mb-8">
                     <div className="flex justify-between items-end mb-2">
@@ -236,7 +281,13 @@ export default function GoalPage() {
                       </span>
                     </div>
                     <div className="h-3 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                      <div className={`h-full transition-all duration-1000 rounded-full ${percentage >= 100 ? 'bg-emerald-500' : 'bg-indigo-600'}`} style={{ width: `${percentage}%` }}></div>
+                      <div className={`h-full transition-all duration-1000 rounded-full ${
+                        percentage >= 100 ? 'bg-emerald-500' : 
+                        (daysLeft !== null && daysLeft <= 7) ? 'bg-rose-500' : 
+                        (daysLeft !== null && daysLeft <= 30) ? 'bg-amber-500' : 
+                        'bg-indigo-600'
+                      }`} 
+                      style={{ width: `${percentage}%` }}></div>
                     </div>
                   </div>
                   
@@ -263,7 +314,7 @@ export default function GoalPage() {
           {/* Goal Insights Banner */}
           <div className="bg-indigo-600 dark:bg-indigo-700 text-white rounded-2xl overflow-hidden relative p-10 flex flex-col md:flex-row items-center gap-10 shadow-xl shadow-indigo-900/10">
             <div className="relative z-10 md:w-2/3">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-4 block">{t('fiscalMomentum')}</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-4 block">{t('PST Momentum')}</span>
               <h2 className="text-4xl font-extrabold tracking-tight mb-4 font-headline leading-tight">
                 {t('goalInsightTitle')}
               </h2>
