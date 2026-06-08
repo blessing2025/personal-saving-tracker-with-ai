@@ -198,6 +198,13 @@ const Landing = () => {
                 </p>
                 
                 {/* Individual Page Screenshot Placeholder */}
+                 <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors">
+                  <img 
+                    src="dashboard.png" 
+                    alt="Dashboard page screenshot" 
+                    className="w-full h-full object-cover opacity-60"
+                   
+                  />
                 <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors">
                   <img 
                     src="expense.png" 
@@ -205,36 +212,42 @@ const Landing = () => {
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors">
                   <img 
                     src="income.png" 
                     alt="Income page screenshot" 
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors">
                   <img 
                     src="report.png" 
                     alt="Report page screenshot" 
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors"></div>
                   <img 
                     src="saving.png" 
                     alt="Savings page screenshot" 
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors"></div>
                   <img 
                     src="tran.png" 
                     alt="Transaction page screenshot" 
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors"></div>
                   <img 
                     src="voice.png" 
                     alt="Voice recording page screenshot" 
                     className="w-full h-full object-cover opacity-60"
                    
                   />
+                   <div className="aspect-video bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden relative group-hover:border-indigo-500/50 transition-colors"></div>
                   <img 
                     src="setting.png" 
                     alt="Settings page screenshot" 
