@@ -128,7 +128,7 @@ Deno.serve(async (req) => {
                 <tr>
                   <td style="vertical-align: middle;">
                     <div style="background-color: ${brandColor}; width: 40px; height: 40px; border-radius: 10px; text-align: center;">
-                      <img src="logo.png" width="24" height="24" style="margin-top: 8px; border: none; display: inline-block;" alt="PST" />
+                      <img src="https://personal-saving-tracker-with-ai.vercel.app/logo.png" width="24" height="24" style="margin-top: 8px; border: none; display: inline-block;" alt="PST" />
                     </div>
                   </td>
                   <td style="padding-left: 12px; font-weight: 900; color: ${brandColor}; font-size: 20px; letter-spacing: -0.02em; vertical-align: middle;">
@@ -143,7 +143,6 @@ Deno.serve(async (req) => {
             </div>
             <div class="footer">
               <p style="font-size: 12px; color: #94a3b8; margin: 0;">&copy; 2026 Personal Saving Tracker. All Rights Reserved.</p>
-              <p style="font-size: 10px; color: #cbd5e1; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em;">personal saving tracker</p>
             </div>
           </div>
         </body>
